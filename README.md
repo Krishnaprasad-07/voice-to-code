@@ -52,7 +52,7 @@ git clone https://github.com/yourusername/voice-to-code.git cd voice-to-code
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
-
+```
 ---
 
 ## 📝 How It Works
