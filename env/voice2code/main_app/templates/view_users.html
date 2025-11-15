@@ -1,0 +1,43 @@
+{% load static %}
+{% include 'header.html' %}
+
+<div class="hero-wrap js-fullheight min-vh-100">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+        <div class="col-md-7 ftco-animate">
+          
+        </div>
+            <section class="ftco-section ftco-no-pb ftco-no-pt " style="margin-top: -500px;">
+                <div class="container">
+                  <div class="row">
+                     <table class="table table-bordered">
+                        <tr>
+                            <th>Sl.No</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                        </tr>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.contact }}</td>
+                        </tr>
+                        {% endfor %}
+                     </table>
+                  </div>
+              </div>
+              </section>
+       
+      </div>
+    </div>
+  </div>
+
+
+{% include 'footer.html' %}

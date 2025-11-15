@@ -1,0 +1,29 @@
+{% load static %}
+{% include 'header.html' %}
+
+<div class="hero-wrap js-fullheight min-vh-100">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+        <div class="col-md-7 ftco-animate">
+        </div>
+        <section class="ftco-section ftco-no-pb ftco-no-pt " >
+            <div class="container">
+              <div class="row">
+                 <div class="card" style="margin-left:300px; width: 550px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; align-items: center;">
+                    <img src="{% static 'images/person_1.jpg' %}" alt="User Profile" style="width: 200px; height: 200px; border-radius: 50%; ">
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <p class="text-dark"><strong>Username:</strong> {{ user.username }}</p>
+                    <p class="text-dark"><strong>Email:</strong> {{ user.email }}</p>
+                    <p class="text-dark"><strong>Contact:</strong> {{ user.contact }}</p>
+                    <a href="{% url 'update_profile' %}"><button class="btn btn-primary mb-3" >Update Profile</button></a>
+                    <a href="{% url 'change_password' %}"><button class="btn btn-danger" >Change Password</button></a>
+                 </div>
+              </div>
+          </div>
+        </section>
+      </div>
+    </div>
+</div>
+
+{% include 'footer.html' %}

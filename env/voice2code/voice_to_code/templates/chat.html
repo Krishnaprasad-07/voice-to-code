@@ -1,0 +1,155 @@
+{% load static %}
+{% include 'header.html' %}
+
+<style>
+    .body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+        background: url('{% static "v2code.png" %}') no-repeat center center/cover;
+        margin: 0;
+    }
+    .hero-wrap{
+        background-image: url('{% static "images/v2code.png" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        width: 100%;
+        height: 100vh;
+    }
+    .chat-container {
+        width: 1200px;
+        height: 500px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+    }
+    .chat-box {
+        flex-grow: 1;
+        padding: 10px;
+        overflow-y: auto;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+    }
+    .input-container {
+        display: flex;
+        gap: 30px;
+        width: 100%;
+        padding: 15px;
+    }
+    .input-container input{
+        width: 750px;
+        border-radius: 10px;
+    }
+    .mic-button, .send-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100px;
+    }
+    .mic-button:hover, .send-button:hover {
+        background: #0056b3;
+    }
+    .code-editor {
+        width: 100%;
+        height: 400px;
+        font-family: monospace;
+        background: #282c34;
+        color: #ffffff;
+        padding: 10px;
+        border-radius: 5px;
+        resize: none;
+        overflow: auto;
+    }
+    .voice-output {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #000000;
+    }
+</style>
+<div class="hero-wrap js-fullheight min-vh-100">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+        <div class="col-md-7 ftco-animate">
+        </div>
+        <section class="ftco-section ftco-no-pb ftco-no-pt " >
+            <div class="container">
+              <div class="row">
+                <div class="chat-container col-md-12">
+                    <h3>Voice to Code Generator</h3>
+                    <div class="chat-box" id="chatBox"></div>
+                    <div class="voice-output" id="voiceOutput"></div>
+                    <textarea id="codeEditor" class="code-editor" placeholder="Generated code will appear here..." readonly></textarea>
+                    <div class="input-container">
+                        <input type="text" id="textInput" placeholder="Type or speak a command...">
+                        <button class="mic-button" onclick="startVoiceInput()">🎤</button>
+                        <button class="send-button" onclick="processInput()">Send</button>
+                    </div>
+                </div>
+              </div>
+          </div>
+        </section>
+      </div>
+    </div>
+</div>
+
+
+<script>
+    let lastGeneratedCode = "";
+    
+    function startVoiceInput() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            const command = event.results[0][0].transcript;
+            document.getElementById("textInput").value = command;
+            document.getElementById("voiceOutput").innerText = "You said: " + command;
+        };
+    }
+
+    function processInput() {
+        const command = document.getElementById("textInput").value.trim();
+        if (!command) return;
+        
+        if (command.toLowerCase() === "edit") {
+            document.getElementById("codeEditor").value = "# Modify the last generated code here...\nprint(\"Editing mode enabled\")";
+            return;
+        }
+        
+        if (command.startsWith("delete ")) {
+            let lineNumber = parseInt(command.split(" ")[1]);
+            let codeLines = lastGeneratedCode.split("\n");
+            if (lineNumber > 0 && lineNumber <= codeLines.length) {
+                codeLines.splice(lineNumber - 1, 1);
+                lastGeneratedCode = codeLines.join("\n");
+                document.getElementById("codeEditor").value = lastGeneratedCode;
+            }
+            return;
+        }
+
+        if (command.toLowerCase() === "save") {
+            alert("Code saved successfully!");
+            return;
+        }
+
+        document.getElementById("codeEditor").value = "# Simulated Response\nprint(\"Hello, this is a static demo!\")";
+    }
+</script>
+
+{% include 'footer.html' %}

@@ -1,0 +1,160 @@
+
+
+
+
+{% load static %}
+{% include 'header.html' %}
+
+<style>
+    .body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+        background: url('{% static "v2code.png" %}') no-repeat center center/cover;
+        margin: 0;
+    }
+    .hero-wrap{
+        background-image: url('{% static "images/v2code.png" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        width: 100%;
+        height: 100vh;
+    }
+    .chat-container {
+        width: 600px;
+        height: 500px;
+        background-color: transparent;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        margin-left: 500px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+    .chat-box {
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+    }
+    .user, .bot {
+        padding: 12px;
+        margin: 5px;
+        border-radius: 12px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+    .user {
+        background: #007bff;
+        color: white;
+        align-self: flex-end;
+    }
+    .bot {
+        background: #e2e2e2;
+        color: #333;
+        align-self: flex-start;
+    }
+    .input-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        background-color: transparent;
+        backdrop-filter: blur(10px);
+    }
+    .mic-button {
+        background: #ff4757;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: transform 0.2s ease;
+    }
+    .mic-button:hover {
+        transform: scale(1.1);
+        background: #e84118;
+    }
+</style>
+
+<div class="hero-wrap js-fullheight min-vh-100">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row no-gutters slider-text js-fullheight align-items-center" data-scrollax-parent="true">
+        <div class="col-md-7 ftco-animate">
+        </div>
+        <section class="ftco-section ftco-no-pb ftco-no-pt " >
+            <div class="container">
+              <div class="row">
+                <div class="chat-container">
+                    <div class="chat-box" id="chatBox">
+                        <div class="bot">Welcome! Tap the mic and speak.</div>
+                    </div>
+                    <div class="input-container">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                        <button class="mic-button" onclick="startVoiceInput()">🎤</button>
+                    </div>
+                </div>
+              </div>
+          </div>
+        </section>
+      </div>
+    </div>
+</div>
+
+<script>
+    function startVoiceInput() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            const command = event.results[0][0].transcript;
+            displayMessage(command, 'user');
+            sendToBackend(command);
+        };
+    }
+
+    function displayMessage(text, sender) {
+        const chatBox = document.getElementById("chatBox");
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add(sender);
+        messageDiv.innerText = text;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendToBackend(command) {
+    fetch("{% url 'voice2code' %}", {  // ✅ Corrected Fetch URL
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+        },
+        body: JSON.stringify({"command": command})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.generated_code) {
+            displayMessage(data.generated_code, 'bot');
+        } else {
+            displayMessage("Error processing command", 'bot');
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+</script>
+
+
+{% include 'footer.html' %}
