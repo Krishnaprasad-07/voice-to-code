@@ -11,7 +11,7 @@ A Voice-Activated Coding Assistant that converts spoken instructions into execut
 
 🧠 Command Interpretation to understand coding instructions
 
-💻 Automatic Code Generation (Python only for now)
+💻 Automatic Code Generation 
 
 🪶 Lightweight UI for user interaction
 
