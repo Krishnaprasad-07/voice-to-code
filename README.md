@@ -90,6 +90,5 @@ If you'd like to contribute, feel free to fork the repo and submit a pull reques
 
 ## 👤 Author
 **Krishnaprasad KB**
-**Swadhish KS**
 
 Feel free to reach out for collaboration or suggestions!
